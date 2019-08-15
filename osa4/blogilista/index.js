@@ -14,7 +14,9 @@ const blogSchema = mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = 'mongodb://localhost/bloglist'
+//TÄSTÄ SALASANA POIS
+//const mongoUrl = 'mongodb+srv://johannay:@cluster0-byuyz.mongodb.net/blog-app?retryWrites=true&w=majority'
+
 mongoose.connect(mongoUrl, { useNewUrlParser: true })
 
 app.use(cors())
