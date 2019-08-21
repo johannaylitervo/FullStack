@@ -36,7 +36,7 @@ const blog = new Blog({
   likes: 7
 })
 
-blog.save().then(response => {
+blog.save().then(() => {
   console.log('blog saved!')
   mongoose.connection.close()
 })
