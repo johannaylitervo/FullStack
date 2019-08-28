@@ -9,14 +9,11 @@ const helper = require('./test_helper')
 beforeEach(async () => {
   await Blog.deleteMany({})
 
-  let blogObject = new Blog(helper.initialBlogs[0])
-  await blogObject.save()
+  const blogObjects = helper.initialBlogs
+    .map(blog => new Blog(blog))
+  const promiseArray = blogObjects.map(blog => blog.save())
+  await Promise.all(promiseArray)
 
-  blogObject = new Blog(helper.initialBlogs[1])
-  await blogObject.save()
-
-  blogObject = new Blog(helper.initialBlogs[2])
-  await blogObject.save()
 })
 
 describe('testing the return of blogs', () => {
@@ -43,10 +40,9 @@ describe('testing the return of blogs', () => {
     expect(response.body[0].id).toBeDefined()
   })
 })
-describe('adding blogs', () => {
+describe('adding new blog', () => {
 
-  test('blogs can be added', async () => {
-
+  test('blog can be added', async () => {
     await api
       .post('/api/blogs')
       .send(helper.newBlog)
@@ -71,21 +67,21 @@ describe('adding blogs', () => {
     expect(response.body.likes).toBe(0)
   })
 
-  test('url missing', async () => {
-    const response = await api
-      .post('/api/blogs')
-      .send(helper.testBlogUrl)
-      .expect(400)
-    console.log(response.text)
-  })
-
   test('title missing', async () => {
-    const response = await api
+    await api
       .post('/api/blogs')
       .send(helper.testBlogTitle)
       .expect(400)
-    console.log(response.text)
+
   })
+
+  test('url missing', async () => {
+    await api
+      .post('/api/blogs')
+      .send(helper.testBlogUrl)
+      .expect(400)
+  })
+
 })
 
 afterAll(() => {
