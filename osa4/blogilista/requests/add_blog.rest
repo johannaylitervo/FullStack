@@ -2,8 +2,8 @@ post http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-    "title": "Paras blogi",
-    "author": "Nipa",
-    "url": "osoite.com",
-    "likes": "5"
+    "title": "Hagridin reseptit",
+    "author": "Hagrid",
+    "url": "tylypahka.com/hagridinreseptit",
+    "likes": "105"
 } 
