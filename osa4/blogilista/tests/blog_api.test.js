@@ -1,11 +1,13 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const _ = require('lodash')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const helper = require('./test_helper')
+const listHelper = require('../utils/list_helper')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -198,6 +200,59 @@ describe('user creation with lacking info', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd.length).toBe(usersAtStart.length)
   })
+})
+
+describe('author test', () => {
+  test('author with most blogs with empty list', () => {
+    const blogs = []
+    expect(listHelper.mostBlogs(blogs)).toBe(null)
+  })
+
+  test('author with most blogs with two blogs', () => {
+
+    expect(listHelper.mostBlogs(helper.twoBlogs)).toStrictEqual({ author: 'Edsger W. Dijkstra', blogs: 1 })
+  })
+
+  test('author with most blogs with one blog', () => {
+    const blog = [
+      {
+        _id: '5a422b891b54a676234d17fa',
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+        __v: 0
+      }
+    ]
+    expect(listHelper.mostBlogs(blog)).toStrictEqual({ author: 'Robert C. Martin', blogs: 1 })
+  })
+
+  test('author with most blogs', () => {
+    const result = listHelper.mostBlogs(helper.initialBlogs)
+
+    expect(result).toStrictEqual({ author: 'Robert C. Martin', blogs: 3 })
+  })
+
+  test('author with most bloglikes', () => {
+    const result = listHelper.mostLikes(helper.initialBlogs)
+
+    expect(result).toStrictEqual({ author: 'Edsger W. Dijkstra', likes: 17 })
+  })
+
+  test('author with most bloglikes with one blog', () => {
+    const blog = [
+      {
+        _id: '5a422b891b54a676234d17fa',
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+        __v: 0
+      }
+    ]
+    expect(listHelper.mostLikes(blog)).toStrictEqual({ author: 'Robert C. Martin', likes: 10 })
+  })
+
 })
 
 afterAll(() => {
