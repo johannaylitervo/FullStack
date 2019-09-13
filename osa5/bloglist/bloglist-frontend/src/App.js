@@ -15,16 +15,35 @@ const App = () => {
   const [ user, setUser ] = useState(null)
   const [ blogs, setBlogs ] = useState([])
 
+  useEffect(() => {
+      blogService
+        .getAll().then(blogs => {
+          setBlogs(blogs)
+        })
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+    if(loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+  
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({
         username, password,
       })
+
+      window.localStorage.setItem(
+        'loggedBloglistUser', JSON.stringify(user)
+      )
       setUser(user)
       setUsername('')
       setPassword('')
-      setBlogs( await blogService.getAll() )
     }
     catch(exception) {
       setNotification('wrong credentials')
@@ -37,13 +56,24 @@ const App = () => {
     console.log('logging in with', username, password)
   }
 
-/* const rows = () => blogsToShow.map( blog => 
-    <Blog 
-      blog={blog}
-    />
-  )
-  */
-
+  const logOut = async (event) => {
+    try {
+      await window.localStorage.clear()
+      setNotification(`${user.name} logged out`)
+      setTimeout(() => {
+        setNotification('')
+        setManner('')
+      }, 5000)
+      setUser(null)
+    }
+    catch(exception) {
+      setNotification('error')
+      setTimeout(() => {
+        setNotification('')
+        setManner('')
+      }, 5000)
+    }
+  }
 
   const loginForm = () => (
     <div>
@@ -80,7 +110,7 @@ const App = () => {
      {user === null ?
       loginForm() :
       <div>
-        <p>{user.name} logged in</p>
+        <p>{user.name} logged in <button onClick={logOut}>logout</button></p>
         {blogs.map(blog => 
           <Blog key={blog.id} blog={blog}/>
         )}
