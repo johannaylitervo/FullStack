@@ -2,18 +2,22 @@ import React, { useState, useEffect } from 'react'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
-import Blog from './components/Blog';
+import Blog from './components/Blog'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 
 
 const App = () => {
 
   const [ notification, setNotification ] = useState('')
   const [ manner, setManner ] = useState('')
-  const [ errorMessage, setErrorMessage ] = useState(null)
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
   const [ blogs, setBlogs ] = useState([])
+  const [ title, setTitle ] = useState('')
+  const [ author, setAuthor ] = useState('')
+  const [ url, setUrl ] = useState('')
 
   useEffect(() => {
       blogService
@@ -46,7 +50,7 @@ const App = () => {
       setPassword('')
     }
     catch(exception) {
-      setNotification('wrong credentials')
+      setNotification('Wrong username or password')
       setManner('error')
       setTimeout(() => {
         setNotification('')
@@ -60,6 +64,7 @@ const App = () => {
     try {
       await window.localStorage.clear()
       setNotification(`${user.name} logged out`)
+      setManner('notification')
       setTimeout(() => {
         setNotification('')
         setManner('')
@@ -75,9 +80,43 @@ const App = () => {
     }
   }
 
+  const addBlog = async (event) => {
+    event.preventDefault()
+
+    try {
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url,
+      }
+
+      const newBlog = await blogService
+        .create(blogObject)
+      
+        setBlogs(blogs.concat(newBlog))
+
+        setNotification(`New blog ${newBlog.title} created by ${user.name}`)
+        setManner('notification')
+        setTimeout(() => {
+          setNotification('')
+          setManner('')
+        }, 5000)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+    }
+    catch(exception) {
+      setNotification(exception)
+      setManner('error')
+      setTimeout(() => {
+        setNotification('')
+        setManner('')
+      }, 5000)
+    }
+  }
+
   const loginForm = () => (
     <div>
-      <h2>Login to application</h2>
       <form onSubmit={handleLogin}>
         <div>
           username
@@ -102,20 +141,33 @@ const App = () => {
      </div>
   )
 
+  if(user === null) {
+    return (
+      <div>
+        <h2>Login to application</h2>
+        <Notification message={notification} manner={manner}/>
+        {loginForm()}
+      </div>
+    )
+  }
+
   return (
     <div>
      <h1>Blogs</h1>
 
      <Notification message={notification} manner={manner}/>
-     {user === null ?
-      loginForm() :
+
       <div>
         <p>{user.name} logged in <button onClick={logOut}>logout</button></p>
         {blogs.map(blog => 
           <Blog key={blog.id} blog={blog}/>
-        )}
+        )
+      
+      }
+      <BlogForm addBlog={addBlog} title={title} author={author} url={url} 
+      setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl}/>
       </div>
-    }
+     
     </div>
   )
 }
