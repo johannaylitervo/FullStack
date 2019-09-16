@@ -16,3 +16,8 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.blogname:hover {
+  font-size: 103%;
+  cursor: pointer;
+}
