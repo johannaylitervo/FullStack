@@ -1,27 +1,32 @@
 import React from 'react'
 
-const LoginForm = (props) => {
-  console.log('yrittää')
+const LoginForm = ({
+  handleSubmit,
+  handleUsernameChange,
+  handlePasswordChange,
+  username,
+  password
+}) => {
   return (
   <div>
     <h2>Login to application</h2>
-    <form onSubmit={props.handleLogin}>
+    <form onSubmit={handleSubmit}>
       <div>
         username
           <input
           type="text"
-          value={props.username}
+          value={username}
           name="Username"
-          onChange={({ target }) => props.setUsername(target.value)}
+          onChange={handleUsernameChange}
         />
       </div>
       <div>
         password
           <input
           type="password"
-          value={props.password}
+          value={password}
           name="Password"
-          onChange={({ target }) => props.setPassword(target.value)}
+          onChange={handlePasswordChange}
         />
       </div>
       <button type="submit">login</button>
@@ -29,4 +34,4 @@ const LoginForm = (props) => {
    </div>
 )}
 
-export default { LoginForm }
+export default LoginForm
