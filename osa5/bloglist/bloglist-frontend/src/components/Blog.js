@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 
 const Blog = ({ 
   blog, 
-  blogState
+  blogState,
+  updateLikes
  }) => {
   
   const [ blogExtended, setBlogState ] = useState(false)
@@ -33,7 +34,7 @@ const Blog = ({
         </div>
         <div>
           {blog.likes}
-          <button>like</button>
+          <button onClick={updateLikes}>like</button>
         </div>
       </div>
     )

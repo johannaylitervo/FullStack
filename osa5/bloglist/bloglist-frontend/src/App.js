@@ -127,6 +127,26 @@ const App = () => {
       }
     }
   }
+  
+  const updateLikes = async (id) => {
+    const blog = blogs.find(b => b.id === id)
+    const updatedBlog = {
+      ...blog,
+      likes: (blog.likes + 1)
+    }
+    try {
+      const response = await blogService.update(id, updatedBlog)
+
+      setBlogs(blogs.map(b => b.id !== id ? b : updatedBlog))
+    } catch(error) {
+      setNotification('Something happened')
+      setManner('error')
+      setTimeout(() => {
+        setNotification('')
+        setManner('')
+      }, 5000)
+    }
+  }
 
   const loginForm = () => {
     return (
@@ -172,7 +192,7 @@ const App = () => {
             <Blog 
               key={blog.id} 
               blog={blog} 
-            
+              updateLikes={() => updateLikes(blog.id)}
             />
             )
       }
