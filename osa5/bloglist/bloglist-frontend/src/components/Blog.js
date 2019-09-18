@@ -3,42 +3,56 @@ import React, { useState } from 'react'
 const Blog = ({ 
   blog, 
   blogState,
-  updateLikes
+  updateLikes,
+  removeBlog,
+  user
  }) => {
   
   const [ blogExtended, setBlogState ] = useState(false)
+  let removable = false
+  
+  if(user) {
+    removable = blog.user.username === user.username
+  }
+  const showRemove = { display: removable ? '' : 'none'}
+  const extendedBlog = { display: blogExtended ? '' : 'none'}
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    display: ''
   }
 
-  if(!blogExtended) {
+  try {
     return (
-      <div className={"blogname"} onClick={() => setBlogState(!blogExtended)} >
-      {blog.title} by {blog.author}
+        <div style={blogStyle}>
+          <div className={"blogname"} onClick={() => setBlogState(!blogExtended)} >
+            {blog.title} by {blog.author}
+          </div>
+          <div style={extendedBlog}>
+            <a href={blog.url}>
+              {blog.url}
+            </a>
+            <div>
+              {blog.likes}
+            <button onClick={updateLikes}>like</button>
+            <div style={showRemove}>
+              <button onClick={removeBlog}>remove</button>
+            </div>
+          </div>
+        </div>
       </div>
     ) 
   }
-  else {
+  catch(exception) {
     return (
-      <div style={blogStyle}>
-        <div className={"blogname"} onClick={() => setBlogState(!blogExtended)}>
-          {blog.title} by {blog.author}
-        </div>
-        <div>
-          {blog.url}
-        </div>
-        <div>
-          {blog.likes}
-          <button onClick={updateLikes}>like</button>
-        </div>
-      </div>
+      null
     )
   }
+  
 }
 
 export default Blog

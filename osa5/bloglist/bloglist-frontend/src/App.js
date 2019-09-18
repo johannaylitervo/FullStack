@@ -136,7 +136,7 @@ const App = () => {
     }
     try {
       const response = await blogService.update(id, updatedBlog)
-
+      console.log(response)
       setBlogs(blogs.map(b => b.id !== id ? b : updatedBlog))
     } catch(error) {
       setNotification('Something happened')
@@ -146,6 +146,25 @@ const App = () => {
         setManner('')
       }, 5000)
     }
+  }
+
+  const removeBlog = async (blog) => {
+    console.log(blog.id)
+    
+    if(window.confirm(`Do you really want to delete blog ${ blog.title } by ${blog.user.name}?`)) {
+      const response = await blogService.remove(blog.id).catch(error => {
+        console.log(error.response.data)
+      })
+      console.log(response)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      setNotification(`${ blog.title} succesfully removed.`)
+      setManner('notification')
+      setTimeout(() => {
+        setNotification('')
+        setManner('')
+      }, 5000)
+    }
+
   }
 
   const loginForm = () => {
@@ -184,17 +203,25 @@ const App = () => {
     )
   }
 
+  const sortBlogs = () => {
+    blogs.sort( function(a , b) {return (b.likes -a.likes ) } )
+  }
+
   const showBlogs = () => {
+    sortBlogs()
+
     return (
       <div>
       {
-          blogs.map(blog => 
-            <Blog 
-              key={blog.id} 
-              blog={blog} 
-              updateLikes={() => updateLikes(blog.id)}
-            />
-            )
+        blogs.map(blog => 
+          <Blog 
+            key={blog.id} 
+            blog={blog} 
+            updateLikes={() => updateLikes(blog.id)}
+            removeBlog={() => removeBlog(blog)}
+            user={user}
+          />
+        )
       }
       </div>
     )
