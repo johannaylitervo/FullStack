@@ -31,13 +31,13 @@ const Blog = ({
         <div className={'blogname'} onClick={() => setBlogState(!blogExtended)} >
           {blog.title} by {blog.author}
         </div>
-        <div style={extendedBlog}>
+        <div style={extendedBlog} className="togglableContent">
           <a href={blog.url}>
             {blog.url}
           </a>
           <div>
             {blog.likes}
-            <button onClick={updateLikes}>like</button>
+            <button onClick={updateLikes} className="likeButton">like</button>
             <div style={showRemove}>
               <button onClick={removeBlog}>remove</button>
             </div>
