@@ -22,10 +22,10 @@ const App = () => {
   const blogFormRef = React.createRef()
 
   useEffect(() => {
-      blogService
-        .getAll().then(blogs => {
-          setBlogs(blogs)
-        })
+    blogService
+      .getAll().then(blogs => {
+        setBlogs(blogs)
+      })
   }, [])
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-  
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -59,10 +59,9 @@ const App = () => {
         setManner('')
       }, 5000)
     }
-    console.log('logging in with', username, password)
   }
 
-  const logOut = async (event) => {
+  const logOut = async () => {
     try {
       await window.localStorage.clear()
       setNotification(`${user.name} logged out`)
@@ -89,10 +88,10 @@ const App = () => {
     if( title === '' || author === '' || url === '' ) {
       setNotification('All fields are required')
       setManner('error')
-        setTimeout(() => {
-          setNotification('')
-          setManner('')
-        }, 5000)
+      setTimeout(() => {
+        setNotification('')
+        setManner('')
+      }, 5000)
     }
     else {
       try {
@@ -104,18 +103,18 @@ const App = () => {
 
         const newBlog = await blogService
           .create(blogObject)
-        
-          setBlogs(blogs.concat(newBlog))
 
-          setNotification(`New blog ${newBlog.title} created by ${user.name}`)
-          setManner('notification')
-          setTimeout(() => {
-            setNotification('')
-            setManner('')
-          }, 5000)
-          setTitle('')
-          setAuthor('')
-          setUrl('')
+        setBlogs(blogs.concat(newBlog))
+
+        setNotification(`New blog ${newBlog.title} created by ${user.name}`)
+        setManner('notification')
+        setTimeout(() => {
+          setNotification('')
+          setManner('')
+        }, 5000)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
       }
       catch(exception) {
         setNotification('Error happened')
@@ -127,7 +126,7 @@ const App = () => {
       }
     }
   }
-  
+
   const updateLikes = async (id) => {
     const blog = blogs.find(b => b.id === id)
     const updatedBlog = {
@@ -150,7 +149,7 @@ const App = () => {
 
   const removeBlog = async (blog) => {
     console.log(blog.id)
-    
+
     if(window.confirm(`Do you really want to delete blog ${ blog.title } by ${blog.user.name}?`)) {
       const response = await blogService.remove(blog.id).catch(error => {
         console.log(error.response.data)
@@ -171,15 +170,15 @@ const App = () => {
     return (
       <div>
         <Togglable buttonLabel="Log in">
-        
-          <LoginForm
+
+          <LoginForm className="loginForm"
             username={username}
             password={password}
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
           />
-        
+
         </Togglable>
       </div>
     )
@@ -188,15 +187,15 @@ const App = () => {
   const blogForm = () => {
     return (
       <div>
-       <Togglable buttonLabel="New blog" ref={blogFormRef}>
-        <BlogForm 
+        <Togglable buttonLabel="New blog" ref={blogFormRef}>
+          <BlogForm
             onSubmit={addBlog}
             handleTitleChange={({ target }) => setTitle(target.value)}
             handleAuthorChange={({ target }) => setAuthor(target.value)}
             handleUrlChange={({ target }) => setUrl(target.value)}
-            title={title} 
-            author={author} 
-            url={url} 
+            title={title}
+            author={author}
+            url={url}
           />
         </Togglable>
       </div>
@@ -204,7 +203,7 @@ const App = () => {
   }
 
   const sortBlogs = () => {
-    blogs.sort( function(a , b) {return (b.likes -a.likes ) } )
+    blogs.sort( function(a , b) {return (b.likes - a.likes ) } )
   }
 
   const showBlogs = () => {
@@ -212,39 +211,42 @@ const App = () => {
 
     return (
       <div>
-      {
-        blogs.map(blog => 
-          <Blog 
-            key={blog.id} 
-            blog={blog} 
-            updateLikes={() => updateLikes(blog.id)}
-            removeBlog={() => removeBlog(blog)}
-            user={user}
-          />
-        )
-      }
+        {
+          blogs.map(blog =>
+            <Blog className="blog"
+              key={blog.id}
+              blog={blog}
+              updateLikes={() => updateLikes(blog.id)}
+              removeBlog={() => removeBlog(blog)}
+              user={user}
+            />
+          )
+        }
       </div>
     )
   }
 
   return (
     <div>
-     <h1>Blogs</h1>
+      <h1>Blogs</h1>
 
-     <Notification message={notification} manner={manner}/>
-     { user === null ?
-     loginForm() : 
-     <div>  
-      <p>{user.name} logged in <button onClick={logOut}>logout</button></p>
+      <Notification message={notification} manner={manner}/>
+      { user === null ?
+        loginForm() :
+        <div>
+          <p>{user.name} logged in <button onClick={logOut}>logout</button></p>
 
-      {blogForm()}
-      </div>
+          {
+            blogForm()
+          }
+          {
+            showBlogs()
+          }
+        </div>
       }
-      {
-          showBlogs()
-      }
-     </div>
+
+    </div>
   )
 }
 
-export default App;
+export default App

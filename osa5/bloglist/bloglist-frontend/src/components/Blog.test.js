@@ -24,7 +24,6 @@ describe('<Blog />', () => {
       <Blog blog={blog} />
     )
 
-    component.debug()
     const div = component.container.querySelector('.blogname')
 
     expect(div).toHaveTextContent(

@@ -27,7 +27,7 @@ const Blog = ({
 
   try {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blog">
         <div className={'blogname'} onClick={() => setBlogState(!blogExtended)} >
           {blog.title} by {blog.author}
         </div>
