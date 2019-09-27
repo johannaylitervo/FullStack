@@ -6,18 +6,21 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import { useField } from './hooks'
 
 const App = () => {
 
   const [ notification, setNotification ] = useState('')
   const [ manner, setManner ] = useState('')
-  const [ username, setUsername ] = useState('')
-  const [ password, setPassword ] = useState('')
+  //const [ username, setUsername ] = useState('')
+  //const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
   const [ blogs, setBlogs ] = useState([])
   const [ title, setTitle ] = useState('')
   const [ author, setAuthor ] = useState('')
   const [ url, setUrl ] = useState('')
+  const username = useField('text')
+  const password = useField('password')
 
   const blogFormRef = React.createRef()
 
@@ -41,15 +44,16 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password,
+        username: username.value,
+        password: password.value,
       })
 
       window.localStorage.setItem(
         'loggedBloglistUser', JSON.stringify(user)
       )
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     }
     catch(exception) {
       setNotification('Wrong username or password')
@@ -170,15 +174,11 @@ const App = () => {
     return (
       <div>
         <Togglable buttonLabel="Log in">
-
           <LoginForm className="loginForm"
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
+            username={ username }
+            password={ password }
+            handleSubmit={ handleLogin }
           />
-
         </Togglable>
       </div>
     )
