@@ -1,0 +1,38 @@
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa osoiteriville
+fullstack-exampleapp.herokuapp.com/spa
+end note
+selain->palvelin:GET https://fullstack-exampleapp.herokuapp.com/spa
+note left of palvelin
+Muodostetaan HTML sivu
+end note
+palvelin->selain:status 200, sivun HTML koodi
+selain->palvelin: GET https://fullstack-exampleapp.herokuapp.com/main.css
+note left of palvelin
+Ladataan palvelimelta tyylitiedosto, koska se määriteltiin HTML tiedoston
+head-osiossa
+end note
+palvelin->selain: status 200, tyylitiedosto ladattu
+selain->palvelin:GET https://fullstack-exampleapp.herokuapp.com/spa.js
+note left of palvelin
+Ladataan Javascript tiedosto palvelimelta, koska HTML koodin head-osiossa
+määriteltiin script-tagissa se
+end note
+palvelin->selain:status 200, Javascript-koodi ladattu
+selain->palvelin: GET https://fullstack-exampleapp.herokuapp.com/data.json
+note left of palvelin
+Ladataan JSON muotoinen data, mikä määriteltiin Javascript tiedostossa.
+Tästä datasta muodostetaan itse muistiinpanot
+end note over 
+palvelin->selain: status 200, data ladattu
+note left of selain
+Käyttäjä näkee selaimessa HTML:n mikä muokattu 
+tyylitiedostolla ja siihen upotettu Javascript,
+johon saatu tiedot JSON datasta.
+end note over 
+selain->kayttaja:
+note left of selain
+Käyttäjä näkee nettisivun, jossa on muistiinpanoja ja mahdollisuus
+luoda uusi muistiinpano.
+end note

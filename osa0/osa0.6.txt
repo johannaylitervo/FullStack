@@ -1,0 +1,15 @@
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa haluamansa muistiinpanon
+sille varattuun kenttään, ja painaa "Talleta" nappia
+end note
+selain->palvelin:POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+note left of palvelin
+Tehdään HTTP POST-pyyntö palvelimelle kun käyttäjä klikkaa nappia
+end note
+palvelin->selain:status 201, muistiinpano luotu
+selain->kayttaja:
+note left of selain
+Käyttäjä näkee musitiinpanolistan viimeisenä juuri
+luomansa muistiinpanon.
+end note

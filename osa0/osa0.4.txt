@@ -1,0 +1,42 @@
+kayttaja->selain:
+note left of selain
+Käyttäjä kirjoittaa haluamansa muistiinpanon
+sille varattuun kenttään, ja painaa "Talleta" nappia
+end note
+selain->palvelin:POST https://fullstack-exampleapp.herokuapp.com/new_note
+note left of palvelin
+Tehdään HTTP POST-pyyntö palvelimelle kun käyttäjä klikkaa nappia
+end note
+palvelin->selain:status 302, uudelleenohjauspyyntö, uusi GET headerin ohjaamaan osoitteeseen
+selain->palvelin: GET https://fullstack-exampleapp.herokuapp.com/notes
+note left of palvelin
+Ladataan HTML sivu uudestaan
+end note
+selain->palvelin: status 200, HTML sivu ladattu uudestaan
+selain->palvelin: GET https://fullstack-exampleapp.herokuapp.com/main.css
+note left of palvelin
+Ladataan palvelimelta tyylitiedosto, koska se määriteltiin HTML tiedoston
+head-osiossa
+end note
+palvelin->selain: status 200, tyylitiedosto ladattu
+selain->palvelin:GET https://fullstack-exampleapp.herokuapp.com/main.js
+note left of palvelin
+Ladataan Javascript tiedosto palvelimelta, koska HTML koodin head-osiossa
+määriteltiin script-tagissa se
+end note
+palvelin->selain:status 200, Javascript-koodi ladattu
+selain->palvelin: GET https://fullstack-exampleapp.herokuapp.com/data.json
+note left of palvelin
+Ladataan JSON muotoinen data, mikä määriteltiin Javascript tiedostossa.
+Tästä datasta muodostetaan itse muistiinpanot
+end note over 
+palvelin->selain: status 200, data ladattu
+note left of selain
+Käyttäjä näkee selaimessa HTML:n mikä muokattu 
+tyylitiedostolla ja siihen upotettu Javascript,
+johon saatu tiedot JSON datasta.
+end note over 
+selain->kayttaja:
+note left of selain
+Käyttäjä näkee luodun muistiinpanon listan viimeisenä.
+end note
