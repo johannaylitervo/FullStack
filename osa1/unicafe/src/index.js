@@ -11,6 +11,7 @@ const Statistic= ({text, arvo}) => {
 }
 
 const Statistics= ({all, good, neutral, bad}) => {
+
   if(all > 0) {
     return (
       <div>
